@@ -27,6 +27,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <iostream>
+
 #include "precompiled.hpp"
 #include "mailbox.hpp"
 #include "err.hpp"
@@ -58,6 +60,7 @@ zmq::fd_t zmq::mailbox_t::get_fd () const
 
 void zmq::mailbox_t::send (const command_t &cmd_)
 {
+    std::cout << "Sending an internal command: " << cmd_.type << "\n";
     _sync.lock ();
     _cpipe.write (cmd_, false);
     const bool ok = _cpipe.flush ();

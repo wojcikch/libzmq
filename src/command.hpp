@@ -59,25 +59,25 @@ __declspec(align (64))
         stop,
         plug,
         own,
-        attach,
-        bind,
-        activate_read,
-        activate_write,
+        attach, // 3
+        bind, // 4
+        activate_read, // 5
+        activate_write, // 6
         hiccup,
-        pipe_term,
-        pipe_term_ack,
+        pipe_term, // 8
+        pipe_term_ack, // 9
         pipe_hwm,
-        term_req,
-        term,
-        term_ack,
+        term_req, // 11
+        term, // 12
+        term_ack, // 13
         term_endpoint,
-        reap,
-        reaped,
+        reap, // 15
+        reaped, // 16
         inproc_connected,
         conn_failed,
         pipe_peer_stats,
         pipe_stats_publish,
-        done
+        done // 21
     } type;
 
     union args_t

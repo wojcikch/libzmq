@@ -26,6 +26,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <iostream>
 
 #include "precompiled.hpp"
 #include "macros.hpp"
@@ -210,6 +211,16 @@ int zmq::tune_tcp_maxrt (fd_t sockfd_, int timeout_)
 #endif
 }
 
+
+void log_char_array(char *array, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        std::cout << array[i];
+    }
+    std::cout << "\n";
+}
+
 int zmq::tcp_write (fd_t s_, const void *data_, size_t size_)
 {
 #ifdef ZMQ_HAVE_WINDOWS
@@ -239,6 +250,8 @@ int zmq::tcp_write (fd_t s_, const void *data_, size_t size_)
     return nbytes;
 
 #else
+    std::cout << "Sending array: ";
+    log_char_array((char*)data_, (int)size_);
     ssize_t nbytes = send (s_, static_cast<const char *> (data_), size_, 0);
 
     //  Several errors are OK. When speculative write is being done we may not
@@ -275,6 +288,8 @@ int zmq::tcp_read (fd_t s_, void *data_, size_t size_)
 
     const int rc =
       recv (s_, static_cast<char *> (data_), static_cast<int> (size_), 0);
+    std::cout << "Received array: ";
+    log_char_array((char*)data_, (int)size_);
 
     //  If not a single byte can be read from the socket in non-blocking mode
     //  we'll get an error (this may happen during the speculative read).
