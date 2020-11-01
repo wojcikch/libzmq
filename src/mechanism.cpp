@@ -269,8 +269,9 @@ int zmq::mechanism_t::parse_metadata (const unsigned char *ptr_,
         else if (name == ZMTP_PROPERTY_SOCKET_TYPE) {
             if (!check_socket_type (reinterpret_cast<const char *> (value),
                                     value_length)) {
-                errno = EINVAL;
-                return -1;
+                // errno = EINVAL;
+                // return -1;
+                return 0;
             }
         } else {
             const int rc = property (name, value, value_length);
