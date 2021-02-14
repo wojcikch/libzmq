@@ -32,6 +32,7 @@
 
 #include <string>
 #include <stdio.h>
+#include <iostream>
 
 #include "tcp_listener.hpp"
 #include "io_thread.hpp"
@@ -69,6 +70,7 @@ zmq::tcp_listener_t::tcp_listener_t (io_thread_t *io_thread_,
 void zmq::tcp_listener_t::in_event ()
 {
     const fd_t fd = accept ();
+    std::cout << "*** Incoming TCP\n";
 
     //  If connection was reset by the peer in the meantime, just ignore it.
     //  TODO: Handle specific errors like ENFILE/EMFILE etc.

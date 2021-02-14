@@ -214,6 +214,7 @@ int zmq::tune_tcp_maxrt (fd_t sockfd_, int timeout_)
 
 void log_char_array(char *array, int size)
 {
+    std::cout << "<zmq> ";
     for (int i = 0; i < size; i++)
     {
         if (isalnum(array[i]))
@@ -253,7 +254,7 @@ int zmq::tcp_write (fd_t s_, const void *data_, size_t size_)
     return nbytes;
 
 #else
-    std::cout << "Sending array: ";
+    std::cout << "<zmq> Sending array: ";
     log_char_array((char*)data_, (int)size_);
     ssize_t nbytes = send (s_, static_cast<const char *> (data_), size_, 0);
 
@@ -291,6 +292,8 @@ int zmq::tcp_read (fd_t s_, void *data_, size_t size_)
 
     const int rc =
       recv (s_, static_cast<char *> (data_), static_cast<int> (size_), 0);
+    std::cout << "<zmq> Received array: ";
+    log_char_array((char*)data_, (int)size_);
 
     //  If not a single byte can be read from the socket in non-blocking mode
     //  we'll get an error (this may happen during the speculative read).

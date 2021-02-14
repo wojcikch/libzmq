@@ -32,6 +32,8 @@
 #include "precompiled.hpp"
 #include "mailbox.hpp"
 #include "err.hpp"
+#include "object.hpp"
+
 
 zmq::mailbox_t::mailbox_t ()
 {
@@ -60,7 +62,7 @@ zmq::fd_t zmq::mailbox_t::get_fd () const
 
 void zmq::mailbox_t::send (const command_t &cmd_)
 {
-    std::cout << "Sending an internal command: " << cmd_.type << "\n";
+    std::cout << "Sending internal command: " << cmd_.type << " to " << cmd_.destination->get_tid() << "\n";
     _sync.lock ();
     _cpipe.write (cmd_, false);
     const bool ok = _cpipe.flush ();
@@ -99,7 +101,7 @@ int zmq::mailbox_t::recv (command_t *cmd_, int timeout_)
 
     //  Get a command.
     const bool ok = _cpipe.read (cmd_);
-    std::cout << "Received an internal command: " << cmd_->type << "\n";
+    std::cout << "Received internal command: " << cmd_->type <<  " to " << cmd_->destination->get_tid() << "\n";
     zmq_assert (ok);
     return 0;
 }

@@ -30,6 +30,7 @@
 #include "precompiled.hpp"
 #include <new>
 #include <stddef.h>
+#include <iostream>
 
 #include "macros.hpp"
 #include "pipe.hpp"
@@ -276,6 +277,7 @@ void zmq::pipe_t::rollback () const
 void zmq::pipe_t::flush ()
 {
     //  The peer does not exist anymore at this point.
+    std::cout << "**** flush\n";
     if (_state == term_ack_sent)
         return;
 
