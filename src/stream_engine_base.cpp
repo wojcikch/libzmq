@@ -39,6 +39,7 @@
 
 #include <new>
 #include <sstream>
+#include <iostream>
 
 #include "stream_engine_base.hpp"
 #include "io_thread.hpp"
@@ -250,15 +251,20 @@ bool zmq::stream_engine_base_t::in_event_internal ()
 
     //  If still handshaking, receive and process the greeting message.
     if (unlikely (_handshaking)) {
+        std::cout << "in_event_internal handshake\n";
         if (handshake ()) {
             //  Handshaking was successful.
             //  Switch into the normal message flow.
             _handshaking = false;
+            std::cout << "in_event_internal handshake done\n";
 
             if (_mechanism == NULL && _has_handshake_stage)
                 _session->engine_ready ();
         } else
-            return false;
+            {
+                return false;
+                std::cout << "in_event_internal handshake failed\n";
+            }
     }
 
 
@@ -266,6 +272,7 @@ bool zmq::stream_engine_base_t::in_event_internal ()
 
     //  If there has been an I/O error, stop polling.
     if (_input_stopped) {
+        std::cout << "in_event_internal stop pulling\n";
         rm_fd (_handle);
         _io_error = true;
         return true; // TODO or return false in this case too?
@@ -273,6 +280,7 @@ bool zmq::stream_engine_base_t::in_event_internal ()
 
     //  If there's no data to process in the buffer...
     if (!_insize) {
+        std::cout << "in_event_internal no data\n";
         //  Retrieve the buffer and read as much data as possible.
         //  Note that buffer can be arbitrarily large. However, we assume
         //  the underlying TCP layer has fixed buffer size and thus the
@@ -284,6 +292,7 @@ bool zmq::stream_engine_base_t::in_event_internal ()
 
         if (rc == -1) {
             if (errno != EAGAIN) {
+                std::cout << "in_event_internal connection error\n";
                 error (connection_error);
                 return false;
             }
@@ -300,6 +309,7 @@ bool zmq::stream_engine_base_t::in_event_internal ()
     size_t processed = 0;
 
     while (_insize > 0) {
+        std::cout << "in_event_internal positive insize\n";
         rc = _decoder->decode (_inpos, _insize, processed);
         zmq_assert (processed <= _insize);
         _inpos += processed;
@@ -314,6 +324,7 @@ bool zmq::stream_engine_base_t::in_event_internal ()
     //  Tear down the connection if we have failed to decode input data
     //  or the session has rejected the message.
     if (rc == -1) {
+        std::cout << "in_event_internal failed decoding\n";
         if (errno != EAGAIN) {
             error (protocol_error);
             return false;
@@ -370,6 +381,7 @@ void zmq::stream_engine_base_t::out_event ()
     //  limited transmission buffer and thus the actual number of bytes
     //  written should be reasonably modest.
     const int nbytes = write (_outpos, _outsize);
+    std::cout << "out_event: ""_outpos: " << _outpos << ", _outsize: " << _outsize << "\n";
 
     //  IO error has occurred. We stop waiting for output events.
     //  The engine is not terminated until we detect input error;
@@ -385,8 +397,12 @@ void zmq::stream_engine_base_t::out_event ()
     //  If we are still handshaking and there are no data
     //  to send, stop polling for output.
     if (unlikely (_handshaking))
+    {
         if (_outsize == 0)
-            reset_pollout ();
+        {
+            std::cout << "out_event: still handshaking\n";
+            reset_pollout ();}
+    }
 }
 
 void zmq::stream_engine_base_t::restart_output ()

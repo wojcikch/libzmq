@@ -216,7 +216,10 @@ void log_char_array(char *array, int size)
 {
     for (int i = 0; i < size; i++)
     {
-        std::cout << array[i];
+        if (isalnum(array[i]))
+            std::cout << array[i];
+        else
+            std::cout << (int)array[i];
     }
     std::cout << "\n";
 }
@@ -288,8 +291,6 @@ int zmq::tcp_read (fd_t s_, void *data_, size_t size_)
 
     const int rc =
       recv (s_, static_cast<char *> (data_), static_cast<int> (size_), 0);
-    std::cout << "Received array: ";
-    log_char_array((char*)data_, (int)size_);
 
     //  If not a single byte can be read from the socket in non-blocking mode
     //  we'll get an error (this may happen during the speculative read).
@@ -310,6 +311,8 @@ int zmq::tcp_read (fd_t s_, void *data_, size_t size_)
     return rc == SOCKET_ERROR ? -1 : rc;
 
 #else
+    std::cout << "Received array: ";
+    log_char_array((char*)data_, (int)size_);
 
     const ssize_t rc = recv (s_, static_cast<char *> (data_), size_, 0);
 
