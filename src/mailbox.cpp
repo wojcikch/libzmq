@@ -99,6 +99,7 @@ int zmq::mailbox_t::recv (command_t *cmd_, int timeout_)
 
     //  Get a command.
     const bool ok = _cpipe.read (cmd_);
+    std::cout << "Received an internal command: " << cmd_->type << "\n";
     zmq_assert (ok);
     return 0;
 }

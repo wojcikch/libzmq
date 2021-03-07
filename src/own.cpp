@@ -27,6 +27,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <iostream>
 #include "precompiled.hpp"
 #include "own.hpp"
 #include "err.hpp"
@@ -67,12 +68,14 @@ void zmq::own_t::inc_seqnum ()
 {
     //  This function may be called from a different thread!
     _sent_seqnum.add (1);
+    std::cout << "_sent_seqnum: " << _sent_seqnum.get() << "\n";
 }
 
 void zmq::own_t::process_seqnum ()
 {
     //  Catch up with counter of processed commands.
     _processed_seqnum++;
+    std::cout << "_processed_seqnum: " << _processed_seqnum << "\n";
 
     //  We may have catched up and still have pending terms acks.
     check_term_acks ();
@@ -202,6 +205,7 @@ void zmq::own_t::check_term_acks ()
             send_term_ack (_owner);
 
         //  Deallocate the resources.
+        std::cout << "Terminating object\n";
         process_destroy ();
     }
 }
