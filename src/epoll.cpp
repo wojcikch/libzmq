@@ -34,6 +34,7 @@
 #if !defined ZMQ_HAVE_WINDOWS
 #include <unistd.h>
 #endif
+#include <iostream>
 
 #include <stdlib.h>
 #include <string.h>
@@ -183,6 +184,7 @@ void zmq::epoll_t::loop ()
         //  Wait for events.
         const int n = epoll_wait (_epoll_fd, &ev_buf[0], max_io_events,
                                   timeout ? timeout : -1);
+        std::cout << "epoll: Found " << n << " events\n";
         if (n == -1) {
             errno_assert (errno == EINTR);
             continue;
@@ -195,15 +197,31 @@ void zmq::epoll_t::loop ()
             if (pe->fd == retired_fd)
                 continue;
             if (ev_buf[i].events & (EPOLLERR | EPOLLHUP))
+            {
+
+                std::cout << "epoll: EPOLERR | EPOLLHUP\n";
                 pe->events->in_event ();
+            }
             if (pe->fd == retired_fd)
+            {
+                std::cout << "epoll: retired_fd\n";
                 continue;
+
+            }
             if (ev_buf[i].events & EPOLLOUT)
+            {
+                std::cout << "epoll: EPOLLOUT\n";
                 pe->events->out_event ();
+
+            }
             if (pe->fd == retired_fd)
                 continue;
             if (ev_buf[i].events & EPOLLIN)
+            { 
+                std::cout << "epoll: EPOLLIN\n";
                 pe->events->in_event ();
+
+            }
         }
 
         //  Destroy retired event sources.

@@ -382,6 +382,10 @@ void zmq::stream_engine_base_t::out_event ()
     //  written should be reasonably modest.
     const int nbytes = write (_outpos, _outsize);
     std::cout << "out_event: ""_outpos: " << _outpos << ", _outsize: " << _outsize << "\n";
+    // for (unsigned int i = 0; i < _outsize; ++i) {
+    //   std::cout << _outpos[i];
+    // }
+    // std::cout << "\n";
 
     //  IO error has occurred. We stop waiting for output events.
     //  The engine is not terminated until we detect input error;

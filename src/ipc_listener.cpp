@@ -33,6 +33,7 @@
 #if defined ZMQ_HAVE_IPC
 
 #include <new>
+#include <iostream>
 
 #include <string.h>
 
@@ -86,6 +87,7 @@ zmq::ipc_listener_t::ipc_listener_t (io_thread_t *io_thread_,
 void zmq::ipc_listener_t::in_event ()
 {
     const fd_t fd = accept ();
+    std::cout << "ipc_listener_t::in_event\n";
 
     //  If connection was reset by the peer in the meantime, just ignore it.
     //  TODO: Handle specific errors like ENFILE/EMFILE etc.
