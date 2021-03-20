@@ -30,6 +30,7 @@
 #include "precompiled.hpp"
 #include <new>
 #include <string>
+#include <iostream>
 
 #include "macros.hpp"
 #include "tcp_connecter.hpp"
@@ -106,6 +107,7 @@ void zmq::tcp_connecter_t::out_event ()
     if (fd == retired_fd
         && ((options.reconnect_stop & ZMQ_RECONNECT_STOP_CONN_REFUSED)
             && errno == ECONNREFUSED)) {
+        std::cout << "tcp_connecter::out_event: conn failed\n";
         send_conn_failed (_session);
         close ();
         terminate ();
@@ -114,6 +116,7 @@ void zmq::tcp_connecter_t::out_event ()
 
     //  Handle the error condition by attempt to reconnect.
     if (fd == retired_fd || !tune_socket (fd)) {
+        std::cout << "tcp_connecter::out_event: try reconnecting\n";
         close ();
         add_reconnect_timer ();
         return;
@@ -181,9 +184,11 @@ int zmq::tcp_connecter_t::open ()
     }
 
     _addr->resolved.tcp_addr = new (std::nothrow) tcp_address_t ();
+    std::cout << "tcp_connecter::open: resolving address\n";
     alloc_assert (_addr->resolved.tcp_addr);
     _s = tcp_open_socket (_addr->address.c_str (), options, false, true,
                           _addr->resolved.tcp_addr);
+    std::cout << "tcp_connecter::open: opened socket fd: " << _s << "\n";
     if (_s == retired_fd) {
         //  TODO we should emit some event in this case!
 
@@ -193,6 +198,7 @@ int zmq::tcp_connecter_t::open ()
     zmq_assert (_addr->resolved.tcp_addr != NULL);
 
     // Set the socket to non-blocking mode so that we get async connect().
+    std::cout << "tcp_connecter::open: set noblock\n";
     unblock_socket (_s);
 
     const tcp_address_t *const tcp_addr = _addr->resolved.tcp_addr;

@@ -287,6 +287,7 @@ bool zmq::stream_engine_base_t::in_event_internal ()
         //  number of bytes read will be always limited.
         size_t bufsize = 0;
         _decoder->get_buffer (&_inpos, &bufsize);
+        std::cout << "in_event_internal read data\n";
 
         const int rc = read (_inpos, bufsize);
 
