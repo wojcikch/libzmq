@@ -31,6 +31,7 @@
 
 #include "precompiled.hpp"
 #include "mailbox.hpp"
+#include "command.hpp"
 #include "err.hpp"
 #include "object.hpp"
 
@@ -60,9 +61,39 @@ zmq::fd_t zmq::mailbox_t::get_fd () const
     return _signaler.get_fd ();
 }
 
+
+const char* cmd_name(int cmd_type)
+{
+  switch(cmd_type)
+  {
+    case 0: return "stop";
+    case 1: return "plug";
+    case 2: return "attach";
+    case 3: return "bind";
+    case 4: return "activate_read";
+    case 5: return "activate_write";
+    case 6: return "hiccup";
+    case 7: return "pipe_term";
+    case 8: return "pipe_term_ack";
+    case 9: return "pipe_hwm";
+    case 10: return "term_req";
+    case 11: return "term";
+    case 12: return "term_ack";
+    case 13: return "term_endpoint";
+    case 14: return "reap";
+    case 15: return "reaped";
+    case 16: return "inproc_connected";
+    case 17: return "conn_failed";
+    case 18: return "pipe_peer_stats";
+    case 19: return "pipe_stats_publish";
+    case 20: return "done";
+    default: return "other";
+  }
+}
+
 void zmq::mailbox_t::send (const command_t &cmd_)
 {
-    std::cout << "Sending internal command: " << cmd_.type << " to " << cmd_.destination->get_tid() << "\n";
+    std::cout << "Sending internal command: " << cmd_name(cmd_.type) << " to " << cmd_.destination->get_tid() << "\n";
     _sync.lock ();
     _cpipe.write (cmd_, false);
     const bool ok = _cpipe.flush ();
@@ -101,7 +132,7 @@ int zmq::mailbox_t::recv (command_t *cmd_, int timeout_)
 
     //  Get a command.
     const bool ok = _cpipe.read (cmd_);
-    std::cout << "Received internal command: " << cmd_->type <<  " to " << cmd_->destination->get_tid() << "\n";
+    std::cout << "Received internal command: " << cmd_name(cmd_->type) <<  " to " << cmd_->destination->get_tid() << "\n";
     zmq_assert (ok);
     return 0;
 }

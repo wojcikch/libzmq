@@ -184,7 +184,7 @@ int zmq::tcp_connecter_t::open ()
     }
 
     _addr->resolved.tcp_addr = new (std::nothrow) tcp_address_t ();
-    std::cout << "tcp_connecter::open: resolving address\n";
+    std::cout << "tcp_connecter::open: resolving address: " << _addr->address.c_str() << "\n";
     alloc_assert (_addr->resolved.tcp_addr);
     _s = tcp_open_socket (_addr->address.c_str (), options, false, true,
                           _addr->resolved.tcp_addr);
