@@ -33,6 +33,7 @@
 #include <unistd.h>
 #endif
 
+#include <iostream>
 #include <limits>
 #include <climits>
 #include <new>
@@ -427,6 +428,7 @@ bool zmq::ctx_t::start ()
     _slots[term_tid] = &_term_mailbox;
 
     //  Create the reaper thread.
+    std::cout << "creating reaper thread\n";
     _reaper = new (std::nothrow) reaper_t (this, reaper_tid);
     if (!_reaper) {
         errno = ENOMEM;
@@ -486,6 +488,7 @@ zmq::socket_base_t *zmq::ctx_t::create_socket (int type_)
         return NULL;
     }
 
+    std::cout << "create_socket of type " << type_ << "\n";
     if (unlikely (_starting)) {
         if (!start ())
             return NULL;

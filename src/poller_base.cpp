@@ -26,6 +26,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <iostream>
 
 #include "precompiled.hpp"
 #include "poller_base.hpp"
@@ -80,6 +81,7 @@ void zmq::poller_base_t::cancel_timer (i_poll_events *sink_, int id_)
 
 uint64_t zmq::poller_base_t::execute_timers ()
 {
+    std::cout << "poller_base_t::execute_timers\n";
     //  Fast track.
     if (_timers.empty ())
         return 0;

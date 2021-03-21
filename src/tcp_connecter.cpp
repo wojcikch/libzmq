@@ -139,6 +139,7 @@ void zmq::tcp_connecter_t::timer_event (int id_)
 void zmq::tcp_connecter_t::start_connecting ()
 {
     //  Open the connecting socket.
+    std::cout << "tcp_connecter_t::start_connecting\n";
     const int rc = open ();
 
     //  Connect may succeed in synchronous manner.

@@ -254,7 +254,7 @@ int zmq::tcp_write (fd_t s_, const void *data_, size_t size_)
     return nbytes;
 
 #else
-    std::cout << "<zmq> Sending array: ";
+    std::cout << "<zmq> Sending array to socket " << s_ << ": ";
     log_char_array((char*)data_, (int)size_);
     ssize_t nbytes = send (s_, static_cast<const char *> (data_), size_, 0);
 
@@ -314,10 +314,9 @@ int zmq::tcp_read (fd_t s_, void *data_, size_t size_)
     return rc == SOCKET_ERROR ? -1 : rc;
 
 #else
-    std::cout << "Received array: ";
-    log_char_array((char*)data_, (int)size_);
-
     const ssize_t rc = recv (s_, static_cast<char *> (data_), size_, 0);
+    std::cout << "Received array from socket " << s_ << ": ";
+    log_char_array((char*)data_, (int)size_);
 
     //  Several errors are OK. When speculative read is being done we may not
     //  be able to read a single byte from the socket. Also, SIGSTOP issued

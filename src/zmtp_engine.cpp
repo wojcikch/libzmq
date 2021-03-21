@@ -31,6 +31,7 @@
 #include "macros.hpp"
 
 #include <limits.h>
+#include <iostream>
 #include <string.h>
 
 #ifndef ZMQ_HAVE_WINDOWS
@@ -143,6 +144,7 @@ bool zmq::zmtp_engine_t::handshake ()
 
 int zmq::zmtp_engine_t::receive_greeting ()
 {
+    std::cout << "zmtp_engine_t::receive_greeting: getting the greeting...\n";
     bool unversioned = false;
     while (_greeting_bytes_read < _greeting_size) {
         const int n = read (_greeting_recv + _greeting_bytes_read,
@@ -178,6 +180,7 @@ int zmq::zmtp_engine_t::receive_greeting ()
         //  The peer is using versioned protocol.
         receive_greeting_versioned ();
     }
+    std::cout << "zmtp_engine_t::receive_greeting: got greeting\n";
     return unversioned ? 1 : 0;
 }
 

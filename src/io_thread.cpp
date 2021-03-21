@@ -30,6 +30,7 @@
 #include "precompiled.hpp"
 
 #include <new>
+#include <iostream>
 
 #include "macros.hpp"
 #include "io_thread.hpp"
@@ -40,6 +41,7 @@ zmq::io_thread_t::io_thread_t (ctx_t *ctx_, uint32_t tid_) :
     object_t (ctx_, tid_),
     _mailbox_handle (static_cast<poller_t::handle_t> (NULL))
 {
+    std::cout << "creating io_thread\n";
     _poller = new (std::nothrow) poller_t (*ctx_);
     alloc_assert (_poller);
 
