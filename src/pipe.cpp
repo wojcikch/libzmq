@@ -226,8 +226,17 @@ bool zmq::pipe_t::read (msg_t *msg_)
     if (!(msg_->flags () & msg_t::more) && !msg_->is_routing_id ())
         _msgs_read++;
 
+    std::cout << "pipe_t::read: msg_->is_routing_id() = " << msg_->is_routing_id() << "\n";
+    std::cout << "pipe_t::read: _msgs_read = " << _msgs_read << "\n";
+    std::cout << "pipe_t::read: _lwm = " << _lwm << "\n";
+    std::cout << "pipe_t::read: _msgs_read % _lwm = " << _msgs_read % _lwm << "\n";
+
+    // *** This is the code that prevents the receiver from getting the message
     if (_lwm > 0 && _msgs_read % _lwm == 0)
         send_activate_write (_peer, _msgs_read);
+    else
+      std::cout << "pipe_t::read: WARNING -- did not activate write\n";
+    // send_activate_write (_peer, _msgs_read);
 
     return true;
 }
@@ -550,6 +559,7 @@ void zmq::pipe_t::set_hwms (int inhwm_, int outhwm_)
         out = 0;
 
     _lwm = compute_lwm (in);
+    std::cout << "pipe_t::set_hwms: setting _lwm to " << _lwm << "\n";
     _hwm = out;
 }
 

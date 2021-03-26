@@ -33,6 +33,8 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <iostream>
+#include <bitset>
 #include <new>
 
 #include "stdint.hpp"
@@ -491,6 +493,9 @@ void zmq::msg_t::reset_metadata ()
 
 bool zmq::msg_t::is_routing_id () const
 {
+    std::cout << "msg_t::is_routing_id: routing_id = " << std::bitset<32>(routing_id) << "\n";
+    std::cout << "msg_t::is_routing_id: _u.base.flags = " << std::bitset<8>(_u.base.flags) << "\n";
+    std::cout << "msg_t::is_routing_id: _u.base.flags & routing_id = " << (_u.base.flags & routing_id) << "\n";
     return (_u.base.flags & routing_id) == routing_id;
 }
 
