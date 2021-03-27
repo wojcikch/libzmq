@@ -27,6 +27,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <iostream>
 #ifndef __ZMQ_YPIPE_HPP_INCLUDED__
 #define __ZMQ_YPIPE_HPP_INCLUDED__
 
@@ -74,12 +75,19 @@ template <typename T, int N> class ypipe_t ZMQ_FINAL : public ypipe_base_t<T>
     void write (const T &value_, bool incomplete_)
     {
         //  Place the value to the queue, add new terminator element.
+
         _queue.back () = value_;
         _queue.push ();
 
         //  Move the "flush up to here" poiter.
         if (!incomplete_)
+        {
             _f = &_queue.back ();
+            std::cout << "ypipe::write: message completed\n";
+        }
+        else
+            std::cout << "ypipe::write: message incomplete\n";
+
     }
 
 #ifdef ZMQ_HAVE_OPENVMS

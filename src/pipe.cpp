@@ -232,6 +232,8 @@ bool zmq::pipe_t::read (msg_t *msg_)
     std::cout << "pipe_t::read: _msgs_read % _lwm = " << _msgs_read % _lwm << "\n";
 
     // *** This is the code that prevents the receiver from getting the message
+    // *** The condition checks if there are enough messages so that we can
+    // *** initiate write. Usually _msgs_read <= _lwm
     if (_lwm > 0 && _msgs_read % _lwm == 0)
         send_activate_write (_peer, _msgs_read);
     else
@@ -258,6 +260,7 @@ bool zmq::pipe_t::check_write ()
 
 bool zmq::pipe_t::write (const msg_t *msg_)
 {
+    std::cout << "pipe_t::write\n";
     if (unlikely (!check_write ()))
         return false;
 
@@ -265,7 +268,11 @@ bool zmq::pipe_t::write (const msg_t *msg_)
     const bool is_routing_id = msg_->is_routing_id ();
     _out_pipe->write (*msg_, more);
     if (!more && !is_routing_id)
+    {
+
         _msgs_written++;
+        std::cout << "pipe_t::write: wrote messages: _msgs_written = " << _msgs_written << "\n";
+    }
 
     return true;
 }

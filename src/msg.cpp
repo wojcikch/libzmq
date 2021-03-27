@@ -496,6 +496,7 @@ bool zmq::msg_t::is_routing_id () const
     std::cout << "msg_t::is_routing_id: routing_id = " << std::bitset<32>(routing_id) << "\n";
     std::cout << "msg_t::is_routing_id: _u.base.flags = " << std::bitset<8>(_u.base.flags) << "\n";
     std::cout << "msg_t::is_routing_id: _u.base.flags & routing_id = " << (_u.base.flags & routing_id) << "\n";
+    std::cout << "msg_t::is_routing_id: (_u.base.flags & routing_id) == routing_id = " << ((_u.base.flags & routing_id) == routing_id) << "\n";
     return (_u.base.flags & routing_id) == routing_id;
 }
 
